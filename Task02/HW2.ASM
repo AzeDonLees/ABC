@@ -5,9 +5,9 @@ entry start
 .data:
         get_int db '%d',0
         put_int db ' %d',0
-        ;Вывод текста для запроса размера массива
+        ;Р’С‹РІРѕРґ С‚РµРєСЃС‚Р° РґР»СЏ Р·Р°РїСЂРѕСЃР° СЂР°Р·РјРµСЂР° РјР°СЃСЃРёРІР°
         Enter_size db 'Reserve array size:',13,10,0
-        ;Вывод текста для заполнения массива
+        ;Р’С‹РІРѕРґ С‚РµРєСЃС‚Р° РґР»СЏ Р·Р°РїРѕР»РЅРµРЅРёСЏ РјР°СЃСЃРёРІР°
         Enter_elements db 'Put array itself:',13,10,0
         Result db 'Modified: ',0
         temp dd 0
@@ -17,9 +17,9 @@ entry start
 .code:
 
 start:
-        ;Вызов определение размера массива
+        ;Р’С‹Р·РѕРІ РѕРїСЂРµРґРµР»РµРЅРёРµ СЂР°Р·РјРµСЂР° РјР°СЃСЃРёРІР°
         cinvoke printf,Enter_size
-        ;Заполнение масиива
+        ;Р—Р°РїРѕР»РЅРµРЅРёРµ РјР°СЃРёРёРІР°
         cinvoke scanf,get_int,array1size
 
         mov eax,[array1size]
@@ -32,19 +32,19 @@ start:
         cinvoke malloc,eax
         mov [array2],eax
 
-        ;Реализация ввода в массив
+        ;Р РµР°Р»РёР·Р°С†РёСЏ РІРІРѕРґР° РІ РјР°СЃСЃРёРІ
         call ArrayInput
-        ;Реализация функции расчета для массива
+        ;Р РµР°Р»РёР·Р°С†РёСЏ С„СѓРЅРєС†РёРё СЂР°СЃС‡РµС‚Р° РґР»СЏ РјР°СЃСЃРёРІР°
         call Function
-        ;Реализация вывода массива
+        ;Р РµР°Р»РёР·Р°С†РёСЏ РІС‹РІРѕРґР° РјР°СЃСЃРёРІР°
         call PrintResult
 
-        ;освобождение памяти
+        ;РѕСЃРІРѕР±РѕР¶РґРµРЅРёРµ РїР°РјСЏС‚Рё
         cinvoke free,[array1]
         cinvoke free,[array2]
         cinvoke scanf,get_int,temp
         ret
-;Функция заполнения массива
+;Р¤СѓРЅРєС†РёСЏ Р·Р°РїРѕР»РЅРµРЅРёСЏ РјР°СЃСЃРёРІР°
 ArrayInput:
         cinvoke printf,Enter_elements
         mov eax,[array1]
@@ -56,7 +56,7 @@ ArrayInput:
         add eax,4
         loop .input_loop
         ret
-;Фукнция поворота массива
+;Р¤СѓРєРЅС†РёСЏ РїРѕРІРѕСЂРѕС‚Р° РјР°СЃСЃРёРІР°
 Function:
         mov eax,[array1]
         mov ecx,[array1size]
@@ -71,7 +71,7 @@ Function:
         sub edx,4
         loop .fl
         ret
-;Функция вывода в консоль
+;Р¤СѓРЅРєС†РёСЏ РІС‹РІРѕРґР° РІ РєРѕРЅСЃРѕР»СЊ
 PrintResult:
         cinvoke printf,Result
         mov eax,[array2]
