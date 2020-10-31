@@ -6,9 +6,10 @@ include 'win32a.inc'
 entry start
 
 .data:
-        strNotify db "Please enter X: ",0;строка для просьбы Х
+        strNotify db "Please enter X to calculate tan(x): ", 13,10 ,0;строка для просьбы Х
         strFloat db '%f', 0 ;строка для ввода-вывода в printf и scanf
-        strPrintResut db 'Result of tan: %f',0;строка вывода результата
+        strPrintResut db 'Result for tan(x): %f', 13,10,0;строка вывода результата
+        strWrongFormat db 'Wrong format! X cannot be more than 38 and less than -38.', 0
         x dd ?              ;переменная для Х
         sin dd ?            ;переменная для вычисленного синуса
         cos dd ?            ;переменная для вычисленного косинуса
@@ -29,22 +30,52 @@ start:
         push x
         push strFloat
         call [scanf]
+        ;присваеваем к Х
+        mov eax, [x]
+        ;проверка х<38 и x>-38
+        cmp eax, 38.0
+        jl secondCase
+        ;Вывод ошибки
+        call printWrongResult
 
-        ;вызов функции вычисления тангенса
-        call TanFunc
+;Кейс для сравнения
+secondCase:
+ ;проверка x>-38
+ cmp eax, -38.0
+ ;Вызов калькуляции
+ jg normalCalc
+ ;Вывод ошибки
+ call printWrongResult
 
-        ;вывод тангента
-        push dword[tan+4]    ;вывод через double
-        push dword[tan]      ;заполняем ячейку
-        push strPrintResut
-        call [printf]
+;конец программы
+programEnd:
+  ;ожидание нажатия любой клавиши чтобы приложение не закрылось сразу
+  call [getch]
+  ;Для закрытия программы без ошибок
+  push NULL
+  call [ExitProcess]
+  ret
 
-        ;ожидание нажатия любой клавиши чтобы приложение не закрылось сразу
-        call [getch]
+;Если все ок вызываем функции вычисления
+normalCalc:
+  ;вызов функции вычисления тангенса
+  call TanFunc
+  ;вывод тангента
+  push dword[tan+4]    ;вывод через double
+  push dword[tan]      ;заполняем ячейку
+  push strPrintResut
+  call [printf]
+  ;вызов конца программы
+  call programEnd
+  ret
 
-        ;Для закрытия программы без ошибок
-        push NULL
-        call [ExitProcess]
+;вывод если ввели не верно
+printWrongResult:
+   push strWrongFormat
+   call [printf]
+   ;вызов конца программы
+   call programEnd
+   ret
 
 ;функция вычисления тангенса
 TanFunc:
